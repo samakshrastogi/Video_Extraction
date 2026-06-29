@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Video Metadata Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="Video Metadata Dashboard">
+    <meta name="theme-color" content="#111827">
+
+    <!-- Preconnect Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/video_dashboard.css">
+</head>
+
+<body>
+
+    <header class="page-header">
+        <h2>🎬 Video Metadata Dashboard</h2>
+    </header>
+
+    <section class="toolbar-card sticky">
+        <div class="toolbar-row">
+
+            <input id="searchBox" type="text" placeholder="Search video title..." autocomplete="off" inputmode="search">
+
+            <select id="categoryFilter">
+                <option value="">Loading categories...</option>
+            </select>
+
+            <select id="orientationFilter">
+                <option value="">All Orientation</option>
+                <option value="landscape">Landscape</option>
+                <option value="portrait">Portrait</option>
+            </select>
+
+            <select id="pageSizeSelect">
+                <option value="10" selected>10 rows</option>
+                <option value="25">25 rows</option>
+                <option value="50">50 rows</option>
+                <option value="100">100 rows</option>
+                <option value="200">200 rows</option>
+            </select>
+
+            <div class="column-box">
+                <button class="btn-secondary" type="button" onclick="VideoDashboard.toggleColumnDropdown()">
+                    📊 Columns ▼
+                </button>
+                <div id="columnDropdown" class="column-dropdown"></div>
+            </div>
+
+            <button class="btn-success" type="button" onclick="VideoDashboard.downloadExcel()">
+                ⬇ Export Excel
+            </button>
+
+            <div id="exportLoader" class="loader hidden"></div>
+
+            <button class="btn-dark" type="button" onclick="VideoDashboard.toggleTheme()">
+                🌙
+            </button>
+
+        </div>
+
+        <div id="columnChips" class="chips"></div>
+    </section>
+
+    <div id="errorBanner" class="error-banner hidden"></div>
+
+    <main class="table-card">
+
+        <div id="tableLoader" class="table-loader hidden"></div>
+
+        <table id="videoTable" role="grid">
+
+            <colgroup id="tableColGroup"></colgroup>
+
+            <thead>
+                <tr id="tableHeader"></tr>
+            </thead>
+
+            <tbody id="tbody">
+                <tr>
+                    <td class="loading">Loading...</td>
+                </tr>
+            </tbody>
+
+        </table>
+
+        <div id="emptyState" class="empty-state hidden"></div>
+
+    </main>
+
+    <footer class="pagination">
+        <div class="pagination-left">
+            <span id="totalRows">Total Rows: 0</span>
+        </div>
+
+        <div class="pagination-right">
+            <button class="btn-secondary" type="button" onclick="VideoDashboard.prevPage()">
+                ← Previous
+            </button>
+
+            <span id="pageInfo">Page 1 / 1</span>
+
+            <button class="btn-secondary" type="button" onclick="VideoDashboard.nextPage()">
+                Next →
+            </button>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div id="frameModal" class="frame-modal hidden">
+        <div class="frame-modal-content">
+
+            <div class="frame-modal-header">
+                <span id="frameModalTitle">Video Frames</span>
+                <button class="btn-dark" type="button" onclick="VideoDashboard.closeFrameModal()">✕</button>
+            </div>
+
+            <div id="frameGrid" class="frame-grid"></div>
+
+        </div>
+    </div>
+    <!-- Thumbnail Modal -->
+    <div id="thumbnailModal" class="thumb-modal hidden">
+        <div class="thumb-modal-content">
+
+            <div class="thumb-modal-header">
+                <span id="thumbnailModalTitle">Thumbnail Preview</span>
+                <button class="btn-dark" type="button" onclick="VideoDashboard.closeThumbnailModal()">✕</button>
+            </div>
+
+            <div class="thumb-modal-body">
+                <img id="thumbnailModalImg" src="" alt="Thumbnail">
+            </div>
+
+            <div class="thumb-meta" id="thumbnailMeta"></div>
+
+        </div>
+    </div>
+
+
+    <!-- Config -->
+    <script>
+        window.APP_CONFIG = {
+            S3_ENDPOINT: "{{ S3_ENDPOINT }}",
+            S3_BUCKET: "{{ S3_BUCKET }}",
+            API_BASE: "/api/v1"
+        };
+    </script>
+
+    <!-- Libraries -->
+    <script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <!-- App Scripts -->
+    <script defer src="/static/js/video-dashboard-table.js"></script>
+    <script defer src="/static/js/video-dashboard-core.js"></script>
+
+</body>
+
+</html>
